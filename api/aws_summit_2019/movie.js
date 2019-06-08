@@ -7,6 +7,10 @@ exports.get_movie = async function (event) {
 
   return {
     statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
     body: JSON.stringify(result.Item)
   };
 };
@@ -34,6 +38,10 @@ exports.get_user = async function (event) {
 
   return {
     statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
     body: JSON.stringify({ ...user.Item, likes })
   };
 };

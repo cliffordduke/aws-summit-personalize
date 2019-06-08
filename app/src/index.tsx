@@ -5,7 +5,7 @@ import { Grommet, Box } from 'grommet';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 import App from './components/app';
-
+import User from './components/user'
 
 
 const theme = {
@@ -42,6 +42,8 @@ const Layout: React.FC = () => {
         <AppHeader><b>Amazon Personalize</b></AppHeader>
         <Router>
           <Route path='/' exact component={App} />
+          <Route path='/new' exact component={User} />
+          <Route path='/users/:userId' component={User} />
         </Router>
       </Grommet>
     </div>

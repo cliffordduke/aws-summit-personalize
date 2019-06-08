@@ -6,6 +6,8 @@ Description: 'AWS Summit 2019 Personalize Demo
 Globals:
   Function:
     Timeout: 30
+  Api:
+    Cors: '''*'''
 Metadata:
   AWS::ServerlessRepo::Application:
     Name: aws-summit-2019-personalize
@@ -16,7 +18,7 @@ Resources:
     Type: AWS::Serverless::LayerVersion
     Properties:
       LayerName: personalize-dependency-layer
-      ContentUri: s3://aws-summit-2019-personalize-codebase/46bc76633d86e06a97bf7d91f7be8b59
+      ContentUri: s3://aws-summit-2019-personalize-codebase/1bf9f4f9e15bff5678ef427ea9bcb4f4
       CompatibleRuntimes:
       - python3.7
       - python3.6
@@ -25,7 +27,7 @@ Resources:
   GetUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/d51711565e20a8e1fa9db7ddf82634a5
+      CodeUri: s3://aws-summit-2019-personalize-codebase/d2bba41d87f58a1118170be3a468f5f0
       Handler: movie.get_user
       Runtime: nodejs10.x
       Policies:
@@ -44,7 +46,7 @@ Resources:
   GetMovieFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/d51711565e20a8e1fa9db7ddf82634a5
+      CodeUri: s3://aws-summit-2019-personalize-codebase/d2bba41d87f58a1118170be3a468f5f0
       Handler: movie.get_movie
       Runtime: nodejs10.x
       Policies:
@@ -61,7 +63,7 @@ Resources:
   GetRecommendationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/d51711565e20a8e1fa9db7ddf82634a5
+      CodeUri: s3://aws-summit-2019-personalize-codebase/d2bba41d87f58a1118170be3a468f5f0
       Handler: personalize.get_recommendation
       Runtime: python3.7
       Layers:
@@ -78,7 +80,7 @@ Resources:
   RecordEventFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/d51711565e20a8e1fa9db7ddf82634a5
+      CodeUri: s3://aws-summit-2019-personalize-codebase/d2bba41d87f58a1118170be3a468f5f0
       Handler: personalize.record_event
       Runtime: python3.7
       Layers:

@@ -27,6 +27,10 @@ def get_recommendation(event, context):
 
     return {
         'statusCode': 200,
+        'headers': {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        },
         'body': json.dumps(result)
     }
 
@@ -44,5 +48,9 @@ def record_event(event, context):
         }]
     )
     return {
+        'headers': {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+        },
         'statusCode': 200
     }
