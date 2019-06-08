@@ -55,6 +55,8 @@ Resources:
       Policies:
         - DynamoDBReadPolicy:
             TableName: movies
+        - DynamoDBReadPolicy:
+            TableName: movie_likes
       Layers:
         - !Ref PersonalizeLayer
       Events:

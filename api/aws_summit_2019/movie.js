@@ -3,7 +3,19 @@ const aws = require('aws-sdk');
 const db = new aws.DynamoDB.DocumentClient();
 
 exports.get_movie = async function (event) {
-  let result = await db.get({ TableName: 'movies', Key: { 'movieId': parseInt(event.pathParameters.movieId) } }).promise();
+
+  const movieId = parseInt(event.pathParameters.movieId)
+  
+  let result = await db.get({ TableName: 'movies', Key: { 'movieId': movieId } }).promise();
+  let movieVotes = await db.query({
+    TableName: 'movie_likes',
+    IndexName: "movieId-userId-index",
+    KeyConditionExpression: "movieId = :movieId",
+    ExpressionAttributeValues: {
+      ":movieId": movieId
+    },
+    Select: 'COUNT'
+  }).promise();
 
   return {
     statusCode: 200,
@@ -11,7 +23,7 @@ exports.get_movie = async function (event) {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     },
-    body: JSON.stringify(result.Item)
+    body: JSON.stringify({...result.Item, totalFavorites: movieVotes.Count})
   };
 };
 
