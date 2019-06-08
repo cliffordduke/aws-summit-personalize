@@ -35,6 +35,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
     <Box round="xxsmall" elevation="small" overflow="hidden" border={highlight ? { color: 'brand', size: 'small' } : false}>
       <Button
         onClick={() => {
+          if (!movie.movieId) return
           setHighlight(!highlight)
           toggleSelection(movie.movieId)
         }
@@ -50,9 +51,9 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
             align="center"
             justify="between">
             <Box>
-              <Heading level="5" margin="none">{movie.title}</Heading>
+              <Heading truncate={true} level="5" margin="none">{movie.title}</Heading>
               <Text color="dark-5" size="small">
-                {movie.genres && movie.genres.join(' • ')}
+                {movie.genres && movie.genres.slice(0, 4).join(' • ')}
               </Text>
             </Box>
           </Box>
@@ -66,7 +67,6 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
           justify="between"
           pad={{ left: "small", vertical: "small" }}
         >
-
           <Box round="small">
             <Text color="brand" size="small">
               <strong>{highlight ? 'Selected' : ''}</strong>

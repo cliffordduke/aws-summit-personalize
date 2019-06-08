@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Grommet, Box, Heading, Grid } from 'grommet';
+import { Grommet, Box, Heading } from 'grommet';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
-import { App, User } from './components'
+import { App, RecommendationList } from './components'
 import { UserContext } from './contexts'
 import { useLocalStorage } from './LocalStorage';
 
@@ -41,7 +41,7 @@ const AppHeader: React.FC = () => {
             elevation='medium'
 
           >
-            <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize</Link></Heading>
+            <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize MovieLens Demo</Link></Heading>
             <Box direction="row" gap="xxsmall" justify="end"
             >{userId ? `Your User ID: ${userId}` : ''}</Box>
           </Box>
@@ -62,8 +62,8 @@ const Layout: React.FC = () => {
             <AppHeader />
             <Box height="70vh">
               <Route path='/' exact component={App} />
-              <Route path='/recommendations' exact component={User} />
-              <Route path='/recommendations/:userId' component={User} />
+              <Route path='/recommendations' exact component={RecommendationList} />
+              <Route path='/recommendations/:userId' component={RecommendationList} />
             </Box>
           </Grommet>
         </div>
