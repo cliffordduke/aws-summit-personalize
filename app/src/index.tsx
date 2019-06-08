@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Grommet, Box } from 'grommet';
+import { Grommet, Box, Menu, Heading } from 'grommet';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
-import App from './components/app';
-import User from './components/user'
+import { App, User } from './components'
+import { UserContext } from './contexts'
+import { useLocalStorage } from './LocalStorage';
 
 
 const theme = {
@@ -21,32 +22,53 @@ const theme = {
   },
 };
 
-const AppHeader: React.FC = (props) => (
-  <Box
-    tag="header"
-    direction="row"
-    align="center"
-    justify="between"
-    background={{ color: "brand", dark: true }}
-    pad={{ left: 'medium', right: 'small', vertical: 'small' }}
-    elevation='medium'
-    {...props}
-  />
-)
+const AppHeader: React.FC = () => {
+
+  return (
+    <UserContext.Consumer>
+      {
+        ({ userId }) => (
+          <Box
+            tag="header"
+            direction="row"
+            align="center"
+            justify="between"
+            gap="medium"
+            background={{ color: "brand", dark: true }}
+            pad={{ left: 'medium', right: 'small', vertical: 'small' }}
+            margin={{ bottom: 'medium' }}
+
+            elevation='medium'
+
+          >
+            <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize</Link></Heading>
+            <Box direction="row" gap="xxsmall" justify="end"
+            >{userId ? `Your User ID: ${userId}` : ''}</Box>
+          </Box>
+        )
+      }
+    </UserContext.Consumer>
+  )
+}
 
 
 const Layout: React.FC = () => {
+  const [userId, setUserId] = useLocalStorage('UserID', 0)
   return (
-    <div className="App">
-      <Grommet theme={theme}>
-        <AppHeader><b>Amazon Personalize</b></AppHeader>
-        <Router>
-          <Route path='/' exact component={App} />
-          <Route path='/new' exact component={User} />
-          <Route path='/users/:userId' component={User} />
-        </Router>
-      </Grommet>
-    </div>
+    <UserContext.Provider value={{ userId, setUserId }}>
+      <Router>
+        <div className="App">
+          <Grommet theme={theme}>
+            <AppHeader />
+
+            <Route path='/' exact component={App} />
+            <Route path='/recommendations' exact component={User} />
+            <Route path='/recommendations/:userId' component={User} />
+
+          </Grommet>
+        </div>
+      </Router>
+    </UserContext.Provider>
   );
 }
 
