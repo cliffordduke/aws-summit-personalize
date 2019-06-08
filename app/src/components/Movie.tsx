@@ -4,7 +4,7 @@ import { Box, Image, Heading, Text, Button } from 'grommet';
 
 interface IMovieProps {
   id: number,
-  addToSelection: (id: number) => void
+  toggleSelection: (id: number) => void
 }
 
 interface IMovie {
@@ -13,11 +13,12 @@ interface IMovie {
   imdbId?: number
   url?: string
   genres?: string[]
-  title?: string
+  title?: string,
+  totalFavorites?: number
 }
 
 ///onClick={() => addToSelection(movie.movieId)}
-export const Movie: React.FC<IMovieProps> = ({ id, addToSelection }) => {
+export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
   const [movie, setMovie]: [IMovie, React.Dispatch<React.SetStateAction<IMovie>>] = useState({ movieId: 0 });
   const [highlight, setHighlight] = useState(false)
 
@@ -50,6 +51,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, addToSelection }) => {
         </Box>
 
       </Box>
+
       <Box
         tag="footer"
         direction="row"
@@ -59,8 +61,8 @@ export const Movie: React.FC<IMovieProps> = ({ id, addToSelection }) => {
       >
         <Button
           onClick={() => {
-            setHighlight(true)
-            addToSelection(movie.movieId)
+            setHighlight(!highlight)
+            toggleSelection(movie.movieId)
           }
           }
         >
@@ -70,6 +72,9 @@ export const Movie: React.FC<IMovieProps> = ({ id, addToSelection }) => {
             </Text>
           </Box>
         </Button>
+        <Box align="end" justify="between" gap="xsmall" pad={{ right: 'small' }}>
+          <Text color="dark-5" size="xsmall">{movie.totalFavorites} people like this movie</Text>
+        </Box>
       </Box>
     </Box >
   )
