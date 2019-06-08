@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Grommet, Box, Menu, Heading } from 'grommet';
+import { Grommet, Box, Heading, Grid } from 'grommet';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 import { App, User } from './components'
@@ -60,11 +60,11 @@ const Layout: React.FC = () => {
         <div className="App">
           <Grommet theme={theme}>
             <AppHeader />
-
-            <Route path='/' exact component={App} />
-            <Route path='/recommendations' exact component={User} />
-            <Route path='/recommendations/:userId' component={User} />
-
+            <Box height="70vh">
+              <Route path='/' exact component={App} />
+              <Route path='/recommendations' exact component={User} />
+              <Route path='/recommendations/:userId' component={User} />
+            </Box>
           </Grommet>
         </div>
       </Router>
