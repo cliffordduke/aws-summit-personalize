@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Box, Image, Heading, Text, Button } from 'grommet';
-
+import missing_artwork from '../assets/missing-artwork.png'
 
 interface IMovieProps {
   id: number,
@@ -42,7 +42,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
         }
       >
         <Box height="medium">
-          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : './missing-artwork.png'} fit="contain" />
+          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit="contain" />
         </Box>
         <Box pad={{ horizontal: "small" }}>
           <Box

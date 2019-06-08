@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Box, Image, Button, TextInput, Heading } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
+import logo from '../assets/AWS_logo.png'
 
 export const App = withRouter(({ history }) => {
   const [userInput, setUserInput] = useState("");
@@ -21,7 +22,7 @@ export const App = withRouter(({ history }) => {
             justify="center"
             align="center">
             <Box pad="large">
-              <Image src="./AWS_Logo.png" />
+              <Image src={logo} />
             </Box>
             <Box pad="small">
               <TextInput placeholder="Use Existing User ID" value={userInput} onChange={event => setUserInput(event.target.value)} />
