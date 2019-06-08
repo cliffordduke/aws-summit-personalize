@@ -33,49 +33,52 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
 
   return (
     <Box round="xxsmall" elevation="small" overflow="hidden" border={highlight ? { color: 'brand', size: 'small' } : false}>
-      <Box height="medium">
-        <Image src={`http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}`} fit="contain" />
-      </Box>
-      <Box pad={{ horizontal: "small" }}>
+      <Button
+        onClick={() => {
+          setHighlight(!highlight)
+          toggleSelection(movie.movieId)
+        }
+        }
+      >
+        <Box height="medium">
+          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : './missing-artwork.png'} fit="contain" />
+        </Box>
+        <Box pad={{ horizontal: "small" }}>
+          <Box
+            margin={{ top: "small" }}
+            direction="row"
+            align="center"
+            justify="between">
+            <Box>
+              <Heading level="5" margin="none">{movie.title}</Heading>
+              <Text color="dark-5" size="small">
+                {movie.genres && movie.genres.join(' • ')}
+              </Text>
+            </Box>
+          </Box>
+
+        </Box>
+
         <Box
-          margin={{ top: "small" }}
+          tag="footer"
           direction="row"
           align="center"
-          justify="between">
-          <Box>
-            <Heading level="5" margin="none">{movie.title}</Heading>
-            <Text color="dark-5" size="small">
-              {movie.genres && movie.genres.join(' • ')}
-            </Text>
-          </Box>
-        </Box>
-
-      </Box>
-
-      <Box
-        tag="footer"
-        direction="row"
-        align="center"
-        justify="between"
-        pad={{ left: "small", vertical: "small" }}
-      >
-        <Button
-          onClick={() => {
-            setHighlight(!highlight)
-            toggleSelection(movie.movieId)
-          }
-          }
+          justify="between"
+          pad={{ left: "small", vertical: "small" }}
         >
+
           <Box round="small">
             <Text color="brand" size="small">
-              <strong>Favorite</strong>
+              <strong>{highlight ? 'Selected' : ''}</strong>
             </Text>
           </Box>
-        </Button>
-        <Box align="end" justify="between" gap="xsmall" pad={{ right: 'small' }}>
-          <Text color="dark-5" size="xsmall">{movie.totalFavorites} people like this movie</Text>
+
+          <Box align="end" justify="between" gap="xsmall" pad={{ right: 'small' }}>
+            <Text color="dark-5" size="xsmall">{movie.totalFavorites} people like this movie</Text>
+          </Box>
         </Box>
-      </Box>
+      </Button>
     </Box >
+
   )
 }
