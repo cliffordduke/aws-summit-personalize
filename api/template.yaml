@@ -56,7 +56,7 @@ Resources:
         - DynamoDBReadPolicy:
             TableName: movies
         - DynamoDBReadPolicy:
-            TableName: movie_likes
+            TableName: movie_likes 
       Layers:
         - !Ref PersonalizeLayer
       Events:
@@ -88,6 +88,9 @@ Resources:
       CodeUri: aws_summit_2019/
       Handler: personalize.record_event
       Runtime: python3.7
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: movie_likes 
       Layers:
         - !Ref PersonalizeLayer
       Environment:

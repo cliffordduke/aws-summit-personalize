@@ -27,7 +27,7 @@ Resources:
   GetUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/36340a74090c7a50c93e645ebc619b15
+      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
       Handler: movie.get_user
       Runtime: nodejs10.x
       Policies:
@@ -46,7 +46,7 @@ Resources:
   GetMovieFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/36340a74090c7a50c93e645ebc619b15
+      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
       Handler: movie.get_movie
       Runtime: nodejs10.x
       Policies:
@@ -65,7 +65,7 @@ Resources:
   GetRecommendationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/36340a74090c7a50c93e645ebc619b15
+      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
       Handler: personalize.get_recommendation
       Runtime: python3.7
       Layers:
@@ -82,9 +82,12 @@ Resources:
   RecordEventFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/36340a74090c7a50c93e645ebc619b15
+      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
       Handler: personalize.record_event
       Runtime: python3.7
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName: movie_likes
       Layers:
       - Ref: PersonalizeLayer
       Environment:
