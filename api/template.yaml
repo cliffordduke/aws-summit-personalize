@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  AWS Summit 2019 Personalize Demo
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: aws-summit-2019-personalize
+    Description: AWS Summit 2019 Personalize Demo
+    Author: Clifford Duke
+
+Resources:
+  PersonalizeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: personalize-dependency-layer
+      ContentUri: personalize_layer/
+      CompatibleRuntimes:
+        - python3.7
+        - python3.6
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
+  GetUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: aws_summit_2019/
+      Handler: movie.get_user
+      Runtime: nodejs10.x
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: movie_likes
+        - DynamoDBReadPolicy:
+            TableName: users
+      Layers:
+        - !Ref PersonalizeLayer
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            Path: /users/{userId}
+            Method: get
+  GetMovieFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: aws_summit_2019/
+      Handler: movie.get_movie
+      Runtime: nodejs10.x
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: movies
+      Layers:
+        - !Ref PersonalizeLayer
+      Events:
+        GetMovie:
+          Type: Api
+          Properties:
+            Path: /movies/{movieId}
+            Method: get
+  GetRecommendationFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: aws_summit_2019/
+      Handler: personalize.get_recommendation
+      Runtime: python3.7
+      Layers:
+        - !Ref PersonalizeLayer
+      Environment:
+        Variables:
+          PERSONALIZE_CAMPAIGN_ARN: arn:aws:personalize:us-west-2:866716849012:campaign/personalens-campaign
+      Events:
+        GetRecommendation:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /users/{userId}/recommendation
+            Method: get
+  RecordEventFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: aws_summit_2019/
+      Handler: personalize.record_event
+      Runtime: python3.7
+      Layers:
+        - !Ref PersonalizeLayer
+      Environment:
+        Variables:
+          PERSONALIZE_TRACKING_ID: 01643383-1cdb-41e2-9c37-a2949f8e8224
+      Events:
+        RecordEvent:
+          Type: Api
+          Properties:
+            Path: /users/{userId}/record_event
+            Method: post
+
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  GetRecommendationFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt GetRecommendationFunction.Arn
+  GetRecommendationFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt GetRecommendationFunctionRole.Arn
