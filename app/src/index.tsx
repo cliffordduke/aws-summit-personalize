@@ -12,7 +12,8 @@ import { useLocalStorage } from './LocalStorage';
 const theme = {
   global: {
     colors: {
-      brand: '#FF9900'
+      brand: '#FF9900',
+      focus: '#FFCC83'
     },
     font: {
       family: 'AmazonEmber',

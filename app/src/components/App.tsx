@@ -3,6 +3,7 @@ import { Box, Image, Button, TextInput, Heading } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
 import logo from '../assets/AWS_logo.png'
+import { func } from 'prop-types';
 
 export const App = withRouter(({ history }) => {
   const [userInput, setUserInput] = useState("");
@@ -10,6 +11,13 @@ export const App = withRouter(({ history }) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function onChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const re = /^[0-9\b]+$/;
+    if (event.target.value === '' || re.test(event.target.value)) {
+      setUserInput(event.target.value)
+    }
   }
   return (
     <UserContext.Consumer>
@@ -25,7 +33,7 @@ export const App = withRouter(({ history }) => {
               <Image src={logo} />
             </Box>
             <Box pad="small">
-              <TextInput placeholder="Use Existing User ID" value={userInput} onChange={event => setUserInput(event.target.value)} />
+              <TextInput placeholder="Use Existing User ID" value={userInput} onChange={onChange} />
             </Box>
             <Box pad="small">
               <Button label={userInput ? 'Use Existing User' : 'New User'} onClick={() => {

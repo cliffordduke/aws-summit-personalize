@@ -21,12 +21,14 @@ interface IMovie {
 export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
   const [movie, setMovie]: [IMovie, React.Dispatch<React.SetStateAction<IMovie>>] = useState({ movieId: 0 });
   const [highlight, setHighlight] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     async function getMovie() {
       let response = await fetch(`https://api-summit.aws.cliffordduke.dev/movies/${id}`)
       let data: IMovie = await response.json()
       setMovie(data)
+      setLoaded(true)
     }
     getMovie()
   }, [id])
@@ -38,8 +40,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
           if (!movie.movieId) return
           setHighlight(!highlight)
           toggleSelection(movie.movieId)
-        }
-        }
+        }}
       >
         <Box height="medium">
           <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit="contain" />
@@ -74,7 +75,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
           </Box>
 
           <Box align="end" justify="between" gap="xsmall" pad={{ right: 'small' }}>
-            <Text color="dark-5" size="xsmall">{movie.totalFavorites} people like this movie</Text>
+            <Text color="dark-5" size="xsmall">{loaded && `${movie.totalFavorites} people like this movie`}</Text>
           </Box>
         </Box>
       </Button>
