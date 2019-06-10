@@ -1,12 +1,12 @@
 import React, { useState, useContext } from 'react'
-import { Box, Image, Button, TextInput } from 'grommet';
+import { Box, Image, Button, TextInput, Grid } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
 import logo from '../assets/AWS_logo.png'
 
 export const App = withRouter(({ history }) => {
   const [userInput, setUserInput] = useState("");
-  const { setUserId } = useContext(UserContext);
+  const { setUserId, userId } = useContext(UserContext);
   function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -29,6 +29,10 @@ export const App = withRouter(({ history }) => {
     history.push('/recommendations')
   }
 
+  function logout() {
+    setUserId(0)
+  }
+
   return (
     <Box
       style={{ height: "100vh", width: "40vw" }}
@@ -44,6 +48,9 @@ export const App = withRouter(({ history }) => {
       </Box>
       <Box pad="small">
         <Button label={userInput ? 'Use Existing User' : 'New User'} onClick={submit} />
+        {userId !== 0 &&
+          <Button margin={{ top: 'small' }} label="Logout" onClick={logout} />
+        }
       </Box>
     </Box>
   );
