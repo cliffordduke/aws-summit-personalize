@@ -25,27 +25,35 @@ const GetOrdinal = (n: number): string => {
 
 export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
   const [history, setHistory] = useState<IHistoryRecord[]>([])
-
   const { userId } = useContext(UserContext)
+
+  const cacheKey = `history:${userId}`
 
   useEffect(() => {
     async function execute() {
-      let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation/history`);
-      let data = await response.json();
-      setHistory(data.history);
+      const cachedResult = localStorage.getItem(cacheKey)
+      if (cachedResult) {
+        setHistory(JSON.parse(cachedResult))
+      } else {
+        let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation/history`);
+        let data = await response.json();
+        localStorage.setItem(cacheKey, JSON.stringify(data.history))
+        setHistory(data.history);
+      }
     }
     execute();
   }, [match.params.userId, userId])
 
   return (
     <Box>
+      <Heading level="2" margin={{ left: 'small' }}>Your Recommendation History</Heading>
       {
         history.map((record, index) => (
           <React.Fragment key={record.timestamp}>
-            <Heading margin={{ left: 'small' }} level="3">{`${GetOrdinal(index + 1)} recommendation`}</Heading>
+            <Heading margin={{ left: 'small', top: "none" }} level="3">{`${GetOrdinal(index + 1)} recommendation`}</Heading>
             <Grid
               align="start"
-              margin={{ left: "small", right: "small", bottom: 'large' }}
+              margin={{ left: "small", right: "small", bottom: 'medium' }}
               columns={{ count: "fill", size: "medium" }}
               gap="medium">
               {

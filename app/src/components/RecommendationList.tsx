@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 
 import { Movie } from './Movie'
-import { Grid, ResponsiveContext, Text, Box, Button } from 'grommet';
+import { Grid, ResponsiveContext, Text, Box, Button, Heading } from 'grommet';
 import { UserContext } from '../contexts';
 import { Toast } from './Toast';
 
@@ -21,6 +21,9 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
   const [recommendations, setRecommendations] = useState([])
   const [movieSelection, setMovieSelection] = useState<number[]>([])
   const [formSubmitting, setFormSubmitting] = useState(false)
+  const { userId } = useContext(UserContext)
+
+  const cacheKey = `recommendation:${userId}`
 
   function toggleSelection(id: number) {
     if (movieSelection.includes(id))
@@ -29,12 +32,18 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
       setMovieSelection([...movieSelection, id])
   }
 
-  const { userId } = useContext(UserContext)
+
   useEffect(() => {
     async function execute() {
-      let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation`);
-      let data = await response.json();
-      setRecommendations(data.recommendations);
+      const cachedResult = localStorage.getItem(cacheKey)
+      if (cachedResult) {
+        setRecommendations(JSON.parse(cachedResult));
+      } else {
+        let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation`);
+        let data = await response.json();
+        localStorage.setItem(cacheKey, JSON.stringify(data.recommendations))
+        setRecommendations(data.recommendations);
+      }
     }
     execute()
   }, [match.params.userId, userId])
@@ -49,11 +58,14 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
       method: 'POST',
       body: JSON.stringify(payload)
     })
+    localStorage.removeItem(cacheKey)
+    localStorage.removeItem(`history:${userId}`)
     window.location.reload();
   }
 
   return (
     <React.Fragment>
+      <Heading level="2" margin={{ left: 'small' }}>Your Recommendations</Heading>
       <ResponsiveContext.Consumer>
         {
           size => (

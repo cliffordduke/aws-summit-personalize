@@ -44,7 +44,7 @@ const AppHeader = withRouter(({ location }) => {
             <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize MovieLens Demo</Link></Heading>
             <Box direction="row" gap="xxsmall" justify="end"
             >{userId ? `Your User ID: ${userId}` : ''} |
-            {location.pathname === '/recommendations/history'
+            {location.pathname === '/recommendations/history' || location.pathname === '/'
                 ? <Link to={`/recommendations`} style={{ textDecoration: 'none', color: 'inherit' }}>Recommendations</Link>
                 : <Link to={`/recommendations/history`} style={{ textDecoration: 'none', color: 'inherit' }}>History</Link>}
             </Box>
