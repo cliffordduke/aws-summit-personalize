@@ -54,11 +54,12 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
             <Grid
               align="start"
               margin={{ left: "small", right: "small", bottom: 'medium' }}
-              columns={{ count: "fill", size: "medium" }}
+              columns={{ count: "fit", size: "xsmall" }}
               gap="medium">
               {
-                record.recommendation.slice(0, 4).map((movieId, index) => (
+                record.recommendation.slice(0, 30).map((movieId, index) => (
                   <Movie
+                    imageOnly={true}
                     key={movieId}
                     id={movieId} />
                 ))

@@ -5,6 +5,7 @@ import missing_artwork from '../assets/missing-artwork.png'
 interface IMovieProps {
   id: number,
   toggleSelection?: (id: number) => void
+  imageOnly?: boolean
 }
 
 interface IMovie {
@@ -18,7 +19,7 @@ interface IMovie {
 }
 
 ///onClick={() => addToSelection(movie.movieId)}
-export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
+export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly }) => {
   const [movie, setMovie]: [IMovie, React.Dispatch<React.SetStateAction<IMovie>>] = useState({ movieId: 0 });
   const [highlight, setHighlight] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -49,42 +50,46 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
           }
         }}
       >
-        <Box height="medium">
-          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit="contain" />
+        <Box height={imageOnly ? "small" : "medium"}>
+          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit={imageOnly ? "cover" : "contain"} />
         </Box>
-        <Box pad={{ horizontal: "small" }}>
-          <Box
-            margin={{ top: "small" }}
-            direction="row"
-            align="center"
-            justify="between">
-            <Box>
-              <Heading truncate={true} level="5" margin="none">{movie.title}</Heading>
-              <Text color="dark-5" size="small">
-                {movie.genres && movie.genres.slice(0, 4).join(' • ')}
-              </Text>
+        {!imageOnly &&
+          <React.Fragment>
+            <Box pad={{ horizontal: imageOnly ? "none" : "small" }}>
+              <Box
+                margin={{ top: "small" }}
+                direction="row"
+                align="center"
+                justify="between">
+                <Box>
+                  <Heading truncate={true} level="5" margin="none">{movie.title}</Heading>
+                  <Text color="dark-5" size="small">
+                    {movie.genres && movie.genres.slice(0, 4).join(' • ')}
+                  </Text>
+                </Box>
+              </Box>
+
             </Box>
-          </Box>
 
-        </Box>
+            <Box
+              tag="footer"
+              direction="row"
+              align="center"
+              justify="between"
+              pad={{ left: "small", vertical: "small" }}
+            >
+              <Box round="small">
+                <Text color="brand" size="small">
+                  <strong>{highlight ? 'Selected' : ''}</strong>
+                </Text>
+              </Box>
 
-        <Box
-          tag="footer"
-          direction="row"
-          align="center"
-          justify="between"
-          pad={{ left: "small", vertical: "small" }}
-        >
-          <Box round="small">
-            <Text color="brand" size="small">
-              <strong>{highlight ? 'Selected' : ''}</strong>
-            </Text>
-          </Box>
-
-          <Box align="end" justify="between" gap="xsmall" pad={{ right: 'small' }}>
-            <Text color="dark-5" size="xsmall">{loaded && `${movie.totalFavorites} people like this movie`}</Text>
-          </Box>
-        </Box>
+              <Box align="end" justify="between" gap="xsmall" pad={{ right: 'small' }}>
+                <Text color="dark-5" size="xsmall">{loaded && `${movie.totalFavorites} people like this movie`}</Text>
+              </Box>
+            </Box>
+          </React.Fragment>
+        }
       </Button>
     </Box >
 

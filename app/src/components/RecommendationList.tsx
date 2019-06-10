@@ -72,7 +72,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
             <Grid
               align="start"
               margin={{ left: "small", right: "small", bottom: 'xlarge' }}
-              columns={{ count: "fill", size: "medium" }}
+              columns={{ count: "fill", size: "300px" }}
               gap="medium">
               {
                 recommendations.map((recommendation, index) => (
