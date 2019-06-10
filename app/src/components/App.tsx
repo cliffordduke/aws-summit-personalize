@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { Box, Image, Button, TextInput, Heading } from 'grommet';
+import React, { useState, useContext } from 'react'
+import { Box, Image, Button, TextInput } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
 import logo from '../assets/AWS_logo.png'
-import { func } from 'prop-types';
 
 export const App = withRouter(({ history }) => {
   const [userInput, setUserInput] = useState("");
+  const { setUserId } = useContext(UserContext);
   function getRandomInt(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -19,32 +19,32 @@ export const App = withRouter(({ history }) => {
       setUserInput(event.target.value)
     }
   }
-  return (
-    <UserContext.Consumer>
-      {
-        ({ setUserId }) => (
-          <Box
-            style={{ height: "100vh", width: "40vw" }}
-            pad="large"
-            alignSelf="center"
-            justify="center"
-            align="center">
-            <Box pad="large">
-              <Image src={logo} />
-            </Box>
-            <Box pad="small">
-              <TextInput placeholder="Use Existing User ID" value={userInput} onChange={onChange} />
-            </Box>
-            <Box pad="small">
-              <Button label={userInput ? 'Use Existing User' : 'New User'} onClick={() => {
-                setUserId(userInput ? parseInt(userInput) : getRandomInt(500000, 599999))
-                history.push('/recommendations')
-              }} />
-            </Box>
-          </Box>
-        )
-      }
-    </UserContext.Consumer>
 
+  function onEnter(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.keyCode === 13) submit();
+  }
+
+  function submit() {
+    setUserId(userInput ? parseInt(userInput) : getRandomInt(500000, 599999))
+    history.push('/recommendations')
+  }
+
+  return (
+    <Box
+      style={{ height: "100vh", width: "40vw" }}
+      pad="large"
+      alignSelf="center"
+      justify="center"
+      align="center">
+      <Box pad="large">
+        <Image src={logo} />
+      </Box>
+      <Box pad="small">
+        <TextInput placeholder="Use Existing User ID" value={userInput} onChange={onChange} onKeyUp={onEnter} />
+      </Box>
+      <Box pad="small">
+        <Button label={userInput ? 'Use Existing User' : 'New User'} onClick={submit} />
+      </Box>
+    </Box>
   );
 })

@@ -25,9 +25,15 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
 
   useEffect(() => {
     async function getMovie() {
-      let response = await fetch(`https://api-summit.aws.cliffordduke.dev/movies/${id}`)
-      let data: IMovie = await response.json()
-      setMovie(data)
+      const cachedResult = localStorage.getItem(`movie:${id}`)
+      if (cachedResult) {
+        setMovie(JSON.parse(cachedResult))
+      } else {
+        let response = await fetch(`https://api-summit.aws.cliffordduke.dev/movies/${id}`)
+        let data: IMovie = await response.json()
+        localStorage.setItem(`movie:${id}`, JSON.stringify(data))
+        setMovie(data)
+      }
       setLoaded(true)
     }
     getMovie()

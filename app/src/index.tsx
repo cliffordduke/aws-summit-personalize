@@ -40,7 +40,6 @@ const AppHeader: React.FC = () => {
             margin={{ bottom: 'medium' }}
 
             elevation='medium'
-
           >
             <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize MovieLens Demo</Link></Heading>
             <Box direction="row" gap="xxsmall" justify="end"
