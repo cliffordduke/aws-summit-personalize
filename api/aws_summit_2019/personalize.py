@@ -79,7 +79,7 @@ def record_event(event, context):
             eventList=[{
                 'sentAt': int(time.time()),
                 'eventType': 'CLICK',
-                'properties': json.dumps({"itemId": itemId})
+                'properties': json.dumps({"itemId": str(itemId)})
             }]
         )
 

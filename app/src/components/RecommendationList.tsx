@@ -32,40 +32,24 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
   const { userId } = useContext(UserContext)
   useEffect(() => {
     async function execute() {
-      let userResponse = await await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}`);
-      let userData = await userResponse.json();
-      let result = userData.likes.map((like: any) => like.movieId);
-
       let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation`);
       let data = await response.json();
-
-      let filtered = data.recommendations.map((id: any) => parseInt(id)).filter((movieId: number) => !result.includes(movieId)).slice(0, 20)
-      setRecommendations(filtered);
+      setRecommendations(data.recommendations);
     }
     execute()
   }, [match.params.userId, userId])
 
   async function submitChoices() {
     setFormSubmitting(true)
-    let tasks: any[] = []
-
-    movieSelection.filter(movieId => movieId > 0).forEach(movieId => {
-      tasks.push(sendEvent(movieId))
-    })
-
-    await Promise.all(tasks);
-    window.location.reload();
-  }
-
-  async function sendEvent(movieId: number) {
     let payload = {
       sessionId: userId.toString(),
-      itemId: movieId.toString()
+      itemIds: movieSelection.filter(movieId => movieId > 0).map(movieId => movieId.toString())
     }
     await fetch(`https://api-summit.aws.cliffordduke.dev/users/${userId}/record_event`, {
       method: 'POST',
       body: JSON.stringify(payload)
     })
+    window.location.reload();
   }
 
   return (
