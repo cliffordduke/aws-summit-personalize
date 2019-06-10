@@ -3,6 +3,7 @@ import boto3
 import os
 import logging
 import time
+from boto3.dynamodb.conditions import Key, Attr
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -12,19 +13,37 @@ personalize_runtime = boto3.client('personalize-runtime')
 dynamodb = boto3.resource('dynamodb')
 
 
+def get_personalize_recommendation(userId):
+    response = personalize_runtime.get_recommendations(
+        campaignArn=os.environ.get('PERSONALIZE_CAMPAIGN_ARN'),
+        userId=userId,
+        numResults=100
+    )
+    return [int(o["itemId"]) for o in response['itemList']]
+
+
 def get_recommendation(event, context):
 
     logger.info(os.environ.get('PERSONALIZE_CAMPAIGN_ARN'))
     logger.info(event['pathParameters']['userId'])
-    response = personalize_runtime.get_recommendations(
-        campaignArn=os.environ.get('PERSONALIZE_CAMPAIGN_ARN'),
-        userId=event['pathParameters']['userId'],
-        numResults=100
+
+    recommendation = get_personalize_recommendation(
+        event['pathParameters']['userId'])
+
+    already_liked_response = dynamodb.Table('movie_likes').query(
+        KeyConditionExpression=Key('userId').eq(
+            int(event['pathParameters']['userId']))
     )
+
+    already_liked = [int(o['movieId'])
+                     for o in already_liked_response['Items']]
+
+    filtered_results = list(filter(
+        lambda x: x not in already_liked, recommendation))
 
     result = {
         'userId': event['pathParameters']['userId'],
-        'recommendations': [o["itemId"] for o in response['itemList']]
+        'recommendations': filtered_results[:30]
     }
 
     return {
@@ -39,26 +58,38 @@ def get_recommendation(event, context):
 
 def record_event(event, context):
     payload = json.loads(event['body'])
-    personalize_events.put_events(
-        trackingId=os.environ.get('PERSONALIZE_TRACKING_ID'),
-        userId=event['pathParameters']['userId'],
-        sessionId=payload['sessionId'],
-        eventList=[{
-            'sentAt': int(time.time()),
-            'eventType': 'CLICK',
-            'properties': json.dumps({"itemId": payload["itemId"]})
-        }]
-    )
+    userId = event['pathParameters']['userId']
 
-    likes_table = dynamodb.Table('movie_likes')
+    # Record previous Recommendation First
+    last_recommendation = get_personalize_recommendation(userId)
 
-    likes_table.put_item(
+    dynamodb.Table('user_recommendation_history').put_item(
         Item={
-            "userId": int(event['pathParameters']['userId']),
-            "movieId": int(payload['itemId']),
-            "timestamp": int(time.time())
+            'userId': int(userId),
+            'timestamp': int(time.time()),
+            'recommendation': last_recommendation
         }
     )
+
+    for itemId in payload["itemIds"]:
+        personalize_events.put_events(
+            trackingId=os.environ.get('PERSONALIZE_TRACKING_ID'),
+            userId=userId,
+            sessionId=payload['sessionId'],
+            eventList=[{
+                'sentAt': int(time.time()),
+                'eventType': 'CLICK',
+                'properties': json.dumps({"itemId": itemId})
+            }]
+        )
+
+    with dynamodb.Table('movie_likes').batch_writer() as batch:
+        for itemId in payload["itemIds"]:
+            batch.put_item(Item={
+                "userId": int(userId),
+                "movieId": int(itemId),
+                "timestamp": int(time.time())
+            })
 
     return {
         'headers': {

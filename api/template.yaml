@@ -71,6 +71,9 @@ Resources:
       CodeUri: aws_summit_2019/
       Handler: personalize.get_recommendation
       Runtime: python3.7
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: movie_likes
       Layers:
         - !Ref PersonalizeLayer
       Environment:
@@ -91,11 +94,14 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: movie_likes 
+        - DynamoDBCrudPolicy:
+            TableName: user_recommendation_history
       Layers:
         - !Ref PersonalizeLayer
       Environment:
         Variables:
           PERSONALIZE_TRACKING_ID: 01643383-1cdb-41e2-9c37-a2949f8e8224
+          PERSONALIZE_CAMPAIGN_ARN: arn:aws:personalize:us-west-2:866716849012:campaign/personalens-campaign
       Events:
         RecordEvent:
           Type: Api

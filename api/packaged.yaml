@@ -27,7 +27,7 @@ Resources:
   GetUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
+      CodeUri: s3://aws-summit-2019-personalize-codebase/da9b51413d7fde77e0a31cc29a06156a
       Handler: movie.get_user
       Runtime: nodejs10.x
       Policies:
@@ -46,7 +46,7 @@ Resources:
   GetMovieFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
+      CodeUri: s3://aws-summit-2019-personalize-codebase/da9b51413d7fde77e0a31cc29a06156a
       Handler: movie.get_movie
       Runtime: nodejs10.x
       Policies:
@@ -65,9 +65,12 @@ Resources:
   GetRecommendationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
+      CodeUri: s3://aws-summit-2019-personalize-codebase/da9b51413d7fde77e0a31cc29a06156a
       Handler: personalize.get_recommendation
       Runtime: python3.7
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: movie_likes
       Layers:
       - Ref: PersonalizeLayer
       Environment:
@@ -82,17 +85,20 @@ Resources:
   RecordEventFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/faed47e22ce4f387b9ef823eeb22505f
+      CodeUri: s3://aws-summit-2019-personalize-codebase/da9b51413d7fde77e0a31cc29a06156a
       Handler: personalize.record_event
       Runtime: python3.7
       Policies:
       - DynamoDBCrudPolicy:
           TableName: movie_likes
+      - DynamoDBCrudPolicy:
+          TableName: user_recommendation_history
       Layers:
       - Ref: PersonalizeLayer
       Environment:
         Variables:
           PERSONALIZE_TRACKING_ID: 01643383-1cdb-41e2-9c37-a2949f8e8224
+          PERSONALIZE_CAMPAIGN_ARN: arn:aws:personalize:us-west-2:866716849012:campaign/personalens-campaign
       Events:
         RecordEvent:
           Type: Api
