@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Box, Image, Button, TextInput, Grid } from 'grommet';
+import { Box, Image, Button, TextInput } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
 import logo from '../assets/AWS_logo.png'

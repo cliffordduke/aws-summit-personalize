@@ -19,7 +19,7 @@ interface IUserData {
 
 export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => {
   const [recommendations, setRecommendations] = useState([])
-  const [movieSelection, setMovieSelection] = useState([0])
+  const [movieSelection, setMovieSelection] = useState<number[]>([])
   const [formSubmitting, setFormSubmitting] = useState(false)
 
   function toggleSelection(id: number) {
@@ -43,7 +43,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
     setFormSubmitting(true)
     let payload = {
       sessionId: userId.toString(),
-      itemIds: movieSelection.filter(movieId => movieId > 0).map(movieId => movieId.toString())
+      itemIds: movieSelection.map(movieId => movieId.toString())
     }
     await fetch(`https://api-summit.aws.cliffordduke.dev/users/${userId}/record_event`, {
       method: 'POST',
@@ -74,7 +74,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
           )
         }
       </ResponsiveContext.Consumer>
-      {movieSelection.length > 1 &&
+      {movieSelection.length > 0 &&
         <Toast position="bottom" full="horizontal" modal={false}>
           <Box
             direction="row"
@@ -85,7 +85,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
             background="#161E2D"
             gap="medium"
           >
-            <Text size="medium">Favorite ({movieSelection.length - 1}) movie{movieSelection.length > 2 ? 's' : ''}</Text>
+            <Text size="medium">Favorite ({movieSelection.length}) movie{movieSelection.length > 1 ? 's' : ''}</Text>
             <Button disabled={formSubmitting} color="brand" label={formSubmitting ? "Saving..." : "Save"} onClick={submitChoices} />
           </Box>
         </Toast>

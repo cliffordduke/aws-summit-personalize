@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Grommet, Box, Heading } from 'grommet';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Switch, withRouter } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
-import { App, RecommendationList } from './components'
+import { App, RecommendationList, MyHistory } from './components'
 import { UserContext } from './contexts'
 import { useLocalStorage } from './LocalStorage';
 
@@ -23,7 +23,7 @@ const theme = {
   },
 };
 
-const AppHeader: React.FC = () => {
+const AppHeader = withRouter(({ location }) => {
 
   return (
     <UserContext.Consumer>
@@ -43,13 +43,17 @@ const AppHeader: React.FC = () => {
           >
             <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize MovieLens Demo</Link></Heading>
             <Box direction="row" gap="xxsmall" justify="end"
-            >{userId ? `Your User ID: ${userId}` : ''}</Box>
+            >{userId ? `Your User ID: ${userId}` : ''} |
+            {location.pathname === '/recommendations/history'
+                ? <Link to={`/recommendations`} style={{ textDecoration: 'none', color: 'inherit' }}>Recommendations</Link>
+                : <Link to={`/recommendations/history`} style={{ textDecoration: 'none', color: 'inherit' }}>History</Link>}
+            </Box>
           </Box>
         )
       }
     </UserContext.Consumer>
   )
-}
+})
 
 
 const Layout: React.FC = () => {
@@ -61,9 +65,13 @@ const Layout: React.FC = () => {
           <Grommet theme={theme}>
             <AppHeader />
             <Box height="70vh">
-              <Route path='/' exact component={App} />
-              <Route path='/recommendations' exact component={RecommendationList} />
-              <Route path='/recommendations/:userId' component={RecommendationList} />
+              <Switch>
+                <Route path='/' exact component={App} />
+                <Route path='/recommendations' exact component={RecommendationList} />
+                <Route path='/recommendations/history' exact component={MyHistory} />
+                <Route path='/recommendations/history/:userId' exact component={MyHistory} />
+                <Route path='/recommendations/:userId' exact component={RecommendationList} />
+              </Switch>
             </Box>
           </Grommet>
         </div>

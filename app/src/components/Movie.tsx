@@ -4,7 +4,7 @@ import missing_artwork from '../assets/missing-artwork.png'
 
 interface IMovieProps {
   id: number,
-  toggleSelection: (id: number) => void
+  toggleSelection?: (id: number) => void
 }
 
 interface IMovie {
@@ -43,9 +43,10 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection }) => {
     <Box round="xxsmall" elevation="small" overflow="hidden" border={highlight ? { color: 'brand', size: 'small' } : false}>
       <Button
         onClick={() => {
-          if (!movie.movieId) return
-          setHighlight(!highlight)
-          toggleSelection(movie.movieId)
+          if (toggleSelection && movie.movieId) {
+            setHighlight(!highlight)
+            toggleSelection(movie.movieId)
+          }
         }}
       >
         <Box height="medium">
