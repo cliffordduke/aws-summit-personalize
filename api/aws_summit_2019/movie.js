@@ -56,3 +56,28 @@ exports.get_user = async function (event) {
     body: JSON.stringify({ ...user.Item, likes })
   };
 };
+
+exports.get_recommendation_history = async function (event) {
+  let queryParams = {
+    TableName: 'user_recommendation_history',
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: {
+      ':userId': parseInt(event.pathParameters.userId)
+    }
+  };
+  let history = await db.query(queryParams).promise();
+  let result = history.Items.map((historyItem) => {
+    return {
+      timestamp: historyItem.timestamp,
+      recommendation: historyItem.recommendation
+    };
+  });
+  return {
+    statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    },
+    body: JSON.stringify({ userId: event.pathParameters.userId, history: result })
+  };
+};

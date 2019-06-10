@@ -65,8 +65,25 @@ Resources:
           Properties:
             Path: /movies/{movieId}
             Method: get
+  GetRecommendationHistoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: aws_summit_2019/
+      Handler: movie.get_recommendation_history
+      Runtime: nodejs10.x
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: user_recommendation_history
+      Layers:
+        - !Ref PersonalizeLayer
+      Events:
+        GetRecommendationHistory:
+          Type: Api
+          Properties:
+            Path: /users/{userId}/recommendation/history
+            Method: get
   GetRecommendationFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: aws_summit_2019/
       Handler: personalize.get_recommendation
@@ -81,7 +98,7 @@ Resources:
           PERSONALIZE_CAMPAIGN_ARN: arn:aws:personalize:us-west-2:866716849012:campaign/personalens-campaign
       Events:
         GetRecommendation:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /users/{userId}/recommendation
             Method: get

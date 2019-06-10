@@ -27,7 +27,7 @@ Resources:
   GetUserFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/959c957d0246bc5560c1192217a5637c
+      CodeUri: s3://aws-summit-2019-personalize-codebase/df68cf931e7f424f7608032ed2f9033d
       Handler: movie.get_user
       Runtime: nodejs10.x
       Policies:
@@ -46,7 +46,7 @@ Resources:
   GetMovieFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/959c957d0246bc5560c1192217a5637c
+      CodeUri: s3://aws-summit-2019-personalize-codebase/df68cf931e7f424f7608032ed2f9033d
       Handler: movie.get_movie
       Runtime: nodejs10.x
       Policies:
@@ -62,10 +62,27 @@ Resources:
           Properties:
             Path: /movies/{movieId}
             Method: get
+  GetRecommendationHistoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://aws-summit-2019-personalize-codebase/df68cf931e7f424f7608032ed2f9033d
+      Handler: movie.get_recommendation_history
+      Runtime: nodejs10.x
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: user_recommendation_history
+      Layers:
+      - Ref: PersonalizeLayer
+      Events:
+        GetRecommendationHistory:
+          Type: Api
+          Properties:
+            Path: /users/{userId}/recommendation/history
+            Method: get
   GetRecommendationFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/959c957d0246bc5560c1192217a5637c
+      CodeUri: s3://aws-summit-2019-personalize-codebase/df68cf931e7f424f7608032ed2f9033d
       Handler: personalize.get_recommendation
       Runtime: python3.7
       Policies:
@@ -85,7 +102,7 @@ Resources:
   RecordEventFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://aws-summit-2019-personalize-codebase/959c957d0246bc5560c1192217a5637c
+      CodeUri: s3://aws-summit-2019-personalize-codebase/df68cf931e7f424f7608032ed2f9033d
       Handler: personalize.record_event
       Runtime: python3.7
       Policies:
