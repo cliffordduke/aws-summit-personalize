@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Grommet, Box, Heading } from 'grommet';
-import { BrowserRouter as Router, Route, Link, Switch, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Switch, withRouter, Redirect } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
 import { App, RecommendationList, MyHistory } from './components'
 import { UserContext } from './contexts'
@@ -60,6 +60,27 @@ const AppHeader = withRouter(({ location }) => {
 
 const Layout: React.FC = () => {
   const [userId, setUserId] = useLocalStorage<number>('UserID')
+
+  function PrivateRoute({ component: Component, ...rest }: any) {
+    return (
+      <Route
+        {...rest}
+        render={props =>
+          userId > 0 ? (
+            <Component {...props} />
+          ) : (
+              <Redirect
+                to={{
+                  pathname: "/",
+                  state: { from: props.location }
+                }}
+              />
+            )
+        }
+      />
+    );
+  }
+
   return (
     <UserContext.Provider value={{ userId, setUserId }}>
       <Router>
@@ -69,8 +90,8 @@ const Layout: React.FC = () => {
             <Box height="70vh">
               <Switch>
                 <Route path='/' exact component={App} />
-                <Route path='/recommendations' exact component={RecommendationList} />
-                <Route path='/recommendations/history' exact component={MyHistory} />
+                <PrivateRoute path='/recommendations' exact component={RecommendationList} />
+                <PrivateRoute path='/recommendations/history' exact component={MyHistory} />
                 <Route path='/recommendations/history/:userId' exact component={MyHistory} />
                 <Route path='/recommendations/:userId' exact component={RecommendationList} />
               </Switch>

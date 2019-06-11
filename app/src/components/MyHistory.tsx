@@ -3,6 +3,7 @@ import { Grid, Box, Heading } from 'grommet';
 import { Movie } from '.';
 import { UserContext } from '../contexts';
 import { Timeline, Event } from "./timeline";
+import { withRouter } from 'react-router';
 
 interface IMyHistoryInput {
   match: {
@@ -24,13 +25,15 @@ const GetOrdinal = (n: number): string => {
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }
 
-export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
+export const MyHistory = withRouter(({ match, history: routeHistory }) => {
   const [history, setHistory] = useState<IHistoryRecord[]>([])
   const [currentRecommendation, setCurrentRecommendation] = useState([])
 
   const { userId } = useContext(UserContext)
 
-  const cacheKey = `history:${userId}`
+  if (!match.params.userId && !userId) routeHistory.push('/')
+
+  const cacheKey = `history:${match.params.userId || userId}`
 
   useEffect(() => {
     async function execute() {
@@ -40,17 +43,18 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
       } else {
         let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation/history`);
         let data = await response.json();
+        console.log(data)
         localStorage.setItem(cacheKey, JSON.stringify(data.history))
         setHistory(data.history);
       }
-      const recommendationCacheResult = localStorage.getItem(`recommendation:${userId}`)
+      const recommendationCacheKey = `recommendation:${match.params.userId || userId}`;
+      const recommendationCacheResult = localStorage.getItem(recommendationCacheKey)
       if (recommendationCacheResult) {
         setCurrentRecommendation(JSON.parse(recommendationCacheResult));
       } else {
         let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation`);
         let data = await response.json();
-        localStorage.setItem(cacheKey, JSON.stringify(data.recommendations))
-        console.log(data.recommendations)
+        localStorage.setItem(recommendationCacheKey, JSON.stringify(data.recommendations))
         setCurrentRecommendation(data.recommendations);
       }
     }
@@ -113,4 +117,4 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
       </Timeline>
     </Box>
   )
-}
+})
