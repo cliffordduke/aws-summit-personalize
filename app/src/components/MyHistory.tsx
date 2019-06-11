@@ -43,7 +43,7 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
       }
     }
     execute();
-  }, [match.params.userId, userId])
+  }, [match.params.userId, userId, cacheKey])
   let recommendationNumbering = 1;
   let recordNumbering = 1;
   const GetHeading = (e: IHistoryRecord) => {
@@ -64,7 +64,7 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
               <Grid
                 align="start"
                 margin={{ left: "small", right: "small", bottom: 'medium' }}
-                columns={{ count: "fit", size: "120px" }}
+                columns={{ count: "fill", size: "120px" }}
                 gap="medium">
                 {
                   record.items.slice(0, 11).map((movieId, index) => (

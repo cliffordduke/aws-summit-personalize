@@ -7,8 +7,6 @@ import * as serviceWorker from './serviceWorker';
 import { App, RecommendationList, MyHistory } from './components'
 import { UserContext } from './contexts'
 import { useLocalStorage } from './LocalStorage';
-import { number } from 'prop-types';
-
 
 const theme = {
   global: {

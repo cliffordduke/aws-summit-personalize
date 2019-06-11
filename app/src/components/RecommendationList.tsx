@@ -46,7 +46,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
       }
     }
     execute()
-  }, [match.params.userId, userId])
+  }, [match.params.userId, userId, cacheKey])
 
   async function submitChoices() {
     setFormSubmitting(true)

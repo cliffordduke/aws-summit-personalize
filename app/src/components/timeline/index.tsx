@@ -11,7 +11,7 @@ interface ILabel {
 
 export const Container = styled.div`
   * {
-    box-sizing: border-box !important;
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
     border: 0;
@@ -41,7 +41,7 @@ export const EventBlock = styled.li`
   position: relative;
 `;
 
-export const Icon = styled.label`
+export const IconBlock = styled.label`
   transform: rotate(45deg);
     background-color: black;
     outline: 10px solid white;
@@ -100,7 +100,7 @@ export const Timeline: React.FC = ({ children }) => (
 
 export const Event: React.FC<IEvent> = ({ children, label, backgroundColor }) => (
   <EventBlock>
-    <Icon />
+    <IconBlock />
     <BodyBlock>
       <Label backgroundColor={backgroundColor}>{label}</Label>
       <Details>{children}</Details>
