@@ -19,7 +19,20 @@ def get_personalize_recommendation(userId):
         userId=userId,
         numResults=100
     )
-    return [int(o["itemId"]) for o in response['itemList']]
+
+    recommendation = [int(o["itemId"]) for o in response['itemList']]
+
+    already_liked_response = dynamodb.Table('movie_likes').query(
+        KeyConditionExpression=Key('userId').eq(int(userId))
+    )
+
+    already_liked = [int(o['movieId'])
+                     for o in already_liked_response['Items']]
+
+    filtered_results = list(filter(
+        lambda x: x not in already_liked, recommendation))
+
+    return filtered_results
 
 
 def get_recommendation(event, context):
@@ -30,20 +43,9 @@ def get_recommendation(event, context):
     recommendation = get_personalize_recommendation(
         event['pathParameters']['userId'])
 
-    already_liked_response = dynamodb.Table('movie_likes').query(
-        KeyConditionExpression=Key('userId').eq(
-            int(event['pathParameters']['userId']))
-    )
-
-    already_liked = [int(o['movieId'])
-                     for o in already_liked_response['Items']]
-
-    filtered_results = list(filter(
-        lambda x: x not in already_liked, recommendation))
-
     result = {
         'userId': event['pathParameters']['userId'],
-        'recommendations': filtered_results[:30]
+        'recommendations': recommendation[:30]
     }
 
     return {
