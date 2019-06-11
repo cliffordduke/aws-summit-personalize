@@ -49,9 +49,9 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
   const GetHeading = (e: IHistoryRecord) => {
     switch (e.event) {
       case "RECOMMENDATION":
-        return `${GetOrdinal(recommendationNumbering++)} recommendation`
+        return `${GetOrdinal(recommendationNumbering++)} generation recommendation`
       case "RECORD":
-        return `${GetOrdinal(recordNumbering++)} favorite`
+        return `${GetOrdinal(recordNumbering++)} user choice`
     }
   }
   return (

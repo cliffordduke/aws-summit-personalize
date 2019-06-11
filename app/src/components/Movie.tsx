@@ -66,7 +66,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly, f
               justify="between">
               <Box>
                 {showTitle &&
-                  <Heading truncate={truncateTitle} level="5" margin="none">{movie.title}</Heading>
+                  <Heading truncate={truncateTitle} level="5" margin="none" textAlign={imageOnly && showTitle ? 'center' : 'start'}>{movie.title}</Heading>
                 }
                 {showGenres &&
                   <Text color="dark-5" size="small">
