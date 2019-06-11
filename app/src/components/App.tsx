@@ -7,11 +7,6 @@ import logo from '../assets/AWS_logo.png'
 export const App = withRouter(({ history }) => {
   const [userInput, setUserInput] = useState("");
   const { setUserId, userId } = useContext(UserContext);
-  function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     const re = /^[0-9\b]+$/;
@@ -25,7 +20,7 @@ export const App = withRouter(({ history }) => {
   }
 
   function submit() {
-    setUserId(userInput ? parseInt(userInput) : getRandomInt(500000, 599999))
+    setUserId(userInput ? parseInt(userInput) : (new Date()).getTime())
     history.push('/recommendations')
   }
 

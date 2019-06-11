@@ -96,24 +96,26 @@ export const MyHistory = withRouter(({ match, history: routeHistory }) => {
             </Event>
           ))
         }
-        <Event backgroundColor="#ff5252" label={`${GetOrdinal(recommendationNumbering++)} generation recommendation`}>
-          <Grid
-            align="start"
-            margin={{ left: "small", right: "small", bottom: 'medium' }}
-            columns={{ count: "fill", size: "120px" }}
-            gap="medium">
-            {
-              currentRecommendation.slice(0, 11).map((movieId, index) => (
-                <Movie
-                  fill={true}
-                  imageOnly={true}
-                  showTitle={true}
-                  key={`current:${movieId}`}
-                  id={movieId} />
-              ))
-            }
-          </Grid>
-        </Event>
+        {history.length > 0 &&
+          <Event backgroundColor="#ff5252" label={`Current generation recommendation`}>
+            <Grid
+              align="start"
+              margin={{ left: "small", right: "small", bottom: 'medium' }}
+              columns={{ count: "fill", size: "120px" }}
+              gap="medium">
+              {
+                currentRecommendation.slice(0, 11).map((movieId, index) => (
+                  <Movie
+                    fill={true}
+                    imageOnly={true}
+                    showTitle={true}
+                    key={`current:${movieId}`}
+                    id={movieId} />
+                ))
+              }
+            </Grid>
+          </Event>
+        }
       </Timeline>
     </Box>
   )
