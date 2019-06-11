@@ -55,7 +55,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly, f
         }}
       >
         <Box height={imageOnly ? "small" : "medium"}>
-          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit={fill ? "cover" : "contain"} />
+          <Image draggable={false} src={movie.posterPath ? `//assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit={fill ? "cover" : "contain"} />
         </Box>
         {(showTitle || showGenres) &&
           <Box pad={{ horizontal: imageOnly ? "none" : "small" }}>

@@ -26,20 +26,32 @@ const GetOrdinal = (n: number): string => {
 
 export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
   const [history, setHistory] = useState<IHistoryRecord[]>([])
+  const [currentRecommendation, setCurrentRecommendation] = useState([])
+
   const { userId } = useContext(UserContext)
 
   const cacheKey = `history:${userId}`
 
   useEffect(() => {
     async function execute() {
-      const cachedResult = localStorage.getItem(cacheKey)
-      if (cachedResult) {
-        setHistory(JSON.parse(cachedResult))
+      const historyCacheResult = localStorage.getItem(cacheKey)
+      if (historyCacheResult) {
+        setHistory(JSON.parse(historyCacheResult))
       } else {
         let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation/history`);
         let data = await response.json();
         localStorage.setItem(cacheKey, JSON.stringify(data.history))
         setHistory(data.history);
+      }
+      const recommendationCacheResult = localStorage.getItem(`recommendation:${userId}`)
+      if (recommendationCacheResult) {
+        setCurrentRecommendation(JSON.parse(recommendationCacheResult));
+      } else {
+        let response = await fetch(`https://api-summit.aws.cliffordduke.dev/users/${match.params.userId || userId}/recommendation`);
+        let data = await response.json();
+        localStorage.setItem(cacheKey, JSON.stringify(data.recommendations))
+        console.log(data.recommendations)
+        setCurrentRecommendation(data.recommendations);
       }
     }
     execute();
@@ -60,7 +72,7 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
       <Timeline>
         {
           history.map((record, index) => (
-            <Event backgroundColor={record.event === "RECORD" ? "#fdc500" : "#ff5252"} label={GetHeading(record)} key={record.timestamp}>
+            <Event backgroundColor={record.event === "RECORD" ? "#fdc500" : "#ff5252"} label={GetHeading(record)} key={index}>
               <Grid
                 align="start"
                 margin={{ left: "small", right: "small", bottom: 'medium' }}
@@ -72,7 +84,7 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
                       fill={record.event === "RECOMMENDATION"}
                       imageOnly={true}
                       showTitle={true}
-                      key={movieId}
+                      key={`${record.timestamp}:${movieId}`}
                       id={movieId} />
                   ))
                 }
@@ -80,6 +92,24 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
             </Event>
           ))
         }
+        <Event backgroundColor="#ff5252" label={`${GetOrdinal(recommendationNumbering++)} generation recommendation`}>
+          <Grid
+            align="start"
+            margin={{ left: "small", right: "small", bottom: 'medium' }}
+            columns={{ count: "fill", size: "120px" }}
+            gap="medium">
+            {
+              currentRecommendation.slice(0, 11).map((movieId, index) => (
+                <Movie
+                  fill={true}
+                  imageOnly={true}
+                  showTitle={true}
+                  key={`current:${movieId}`}
+                  id={movieId} />
+              ))
+            }
+          </Grid>
+        </Event>
       </Timeline>
     </Box>
   )
