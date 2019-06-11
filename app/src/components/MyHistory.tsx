@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Grid, Box, Heading } from 'grommet';
 import { Movie } from '.';
 import { UserContext } from '../contexts';
-import moment from 'moment'
+import { Timeline, Event } from "./timeline";
 
 interface IMyHistoryInput {
   match: {
@@ -13,8 +13,9 @@ interface IMyHistoryInput {
 }
 
 interface IHistoryRecord {
+  event: 'RECOMMENDATION' | 'RECORD'
   timestamp: number
-  recommendation: number[]
+  items: number[]
 }
 
 const GetOrdinal = (n: number): string => {
@@ -43,32 +44,43 @@ export const MyHistory: React.FC<IMyHistoryInput> = ({ match }) => {
     }
     execute();
   }, [match.params.userId, userId])
-
+  let recommendationNumbering = 1;
+  let recordNumbering = 1;
+  const GetHeading = (e: IHistoryRecord) => {
+    switch (e.event) {
+      case "RECOMMENDATION":
+        return `${GetOrdinal(recommendationNumbering++)} recommendation`
+      case "RECORD":
+        return `${GetOrdinal(recordNumbering++)} favorite`
+    }
+  }
   return (
     <Box>
       <Heading level="2" margin={{ left: 'small' }}>Your Recommendation History</Heading>
-      {
-        history.map((record, index) => (
-          <React.Fragment key={record.timestamp}>
-            <Heading margin={{ left: 'small', top: "none" }} level="3">{`${GetOrdinal(index + 1)} recommendation`}</Heading>
-            <Grid
-              align="start"
-              margin={{ left: "small", right: "small", bottom: 'medium' }}
-              columns={{ count: "fit", size: "120px" }}
-              gap="medium">
-              {
-                record.recommendation.slice(0, 26).map((movieId, index) => (
-                  <Movie
-                    imageOnly={true}
-                    key={movieId}
-                    id={movieId} />
-                ))
-              }
-            </Grid>
-            <hr style={{ borderTop: '1px solid #232F3E' }} />
-          </React.Fragment>
-        ))
-      }
+      <Timeline>
+        {
+          history.map((record, index) => (
+            <Event backgroundColor={record.event === "RECORD" ? "#fdc500" : "#ff5252"} label={GetHeading(record)} key={record.timestamp}>
+              <Grid
+                align="start"
+                margin={{ left: "small", right: "small", bottom: 'medium' }}
+                columns={{ count: "fit", size: "120px" }}
+                gap="medium">
+                {
+                  record.items.slice(0, 11).map((movieId, index) => (
+                    <Movie
+                      fill={record.event === "RECOMMENDATION"}
+                      imageOnly={true}
+                      showTitle={true}
+                      key={movieId}
+                      id={movieId} />
+                  ))
+                }
+              </Grid>
+            </Event>
+          ))
+        }
+      </Timeline>
     </Box>
   )
 }

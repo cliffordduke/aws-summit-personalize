@@ -58,26 +58,54 @@ exports.get_user = async function (event) {
 };
 
 exports.get_recommendation_history = async function (event) {
-  let queryParams = {
+  const historyQueryParams = {
     TableName: 'user_recommendation_history',
     KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
       ':userId': parseInt(event.pathParameters.userId)
     }
   };
-  let history = await db.query(queryParams).promise();
-  let result = history.Items.map((historyItem) => {
+  const { Items: history } = await db.query(historyQueryParams).promise();
+
+  const likesQueryParams = {
+    TableName: 'movie_likes',
+    KeyConditionExpression: 'userId = :userId',
+    ExpressionAttributeValues: {
+      ':userId': parseInt(event.pathParameters.userId)
+    }
+  };
+  const { Items: movieLikes } = await db.query(likesQueryParams).promise();
+
+  let historyResult = history.map((historyItem) => {
     return {
+      event: 'RECOMMENDATION',
       timestamp: historyItem.timestamp,
-      recommendation: historyItem.recommendation
+      items: historyItem.recommendation
     };
   });
+
+  let returnResult = [];
+
+  for (let item in historyResult) {
+    let index = parseInt(item);
+    returnResult.push(historyResult[index]);
+    let hasNext = (historyResult[index + 1] !== undefined);
+    let recordEvents = movieLikes.filter((like) => like.timestamp >= historyResult[index].timestamp && (hasNext ? like.timestamp < historyResult[index + 1].timestamp : true));
+    let timestamp = Math.min.apply(null, recordEvents.map((r) => r.timestamp));
+    let recordEvent = {
+      event: 'RECORD',
+      timestamp: timestamp,
+      items: recordEvents.map((r) => r.movieId)
+    };
+    returnResult.push(recordEvent);
+  }
+
   return {
     statusCode: 200,
     headers: {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*'
     },
-    body: JSON.stringify({ userId: event.pathParameters.userId, history: result })
+    body: JSON.stringify({ userId: event.pathParameters.userId, history: returnResult })
   };
 };

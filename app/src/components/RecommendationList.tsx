@@ -79,7 +79,10 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
                   <Movie
                     toggleSelection={toggleSelection}
                     key={recommendation}
-                    id={recommendation} />
+                    id={recommendation}
+                    showGenres={true}
+                    truncateTitle={true}
+                    showTitle={true} />
                 ))
               }
             </Grid>

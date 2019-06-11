@@ -6,6 +6,10 @@ interface IMovieProps {
   id: number,
   toggleSelection?: (id: number) => void
   imageOnly?: boolean
+  fill?: boolean
+  showTitle?: boolean
+  showGenres?: boolean
+  truncateTitle?: boolean
 }
 
 interface IMovie {
@@ -19,7 +23,7 @@ interface IMovie {
 }
 
 ///onClick={() => addToSelection(movie.movieId)}
-export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly }) => {
+export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly, fill, showTitle, showGenres, truncateTitle }) => {
   const [movie, setMovie]: [IMovie, React.Dispatch<React.SetStateAction<IMovie>>] = useState({ movieId: 0 });
   const [highlight, setHighlight] = useState(false)
   const [loaded, setLoaded] = useState(false)
@@ -51,25 +55,32 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly })
         }}
       >
         <Box height={imageOnly ? "small" : "medium"}>
-          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit={imageOnly ? "cover" : "contain"} />
+          <Image draggable={false} src={movie.posterPath ? `http://assets-summit.aws.cliffordduke.dev/${movie.posterPath}` : missing_artwork} fit={fill ? "cover" : "contain"} />
         </Box>
-        {!imageOnly &&
-          <React.Fragment>
-            <Box pad={{ horizontal: imageOnly ? "none" : "small" }}>
-              <Box
-                margin={{ top: "small" }}
-                direction="row"
-                align="center"
-                justify="between">
-                <Box>
-                  <Heading truncate={true} level="5" margin="none">{movie.title}</Heading>
+        {(showTitle || showGenres) &&
+          <Box pad={{ horizontal: imageOnly ? "none" : "small" }}>
+            <Box
+              margin={{ top: "small" }}
+              direction="row"
+              align="center"
+              justify="between">
+              <Box>
+                {showTitle &&
+                  <Heading truncate={truncateTitle} level="5" margin="none">{movie.title}</Heading>
+                }
+                {showGenres &&
                   <Text color="dark-5" size="small">
                     {movie.genres && movie.genres.slice(0, 4).join(' • ')}
                   </Text>
-                </Box>
+                }
               </Box>
-
             </Box>
+
+          </Box>
+        }
+        {!imageOnly &&
+          <React.Fragment>
+
 
             <Box
               tag="footer"
