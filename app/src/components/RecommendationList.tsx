@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import { Movie } from './Movie'
 import { Grid, ResponsiveContext, Text, Box, Button, Heading } from 'grommet';
-import { UserContext } from '../contexts';
+import { UserContext, useRouter } from '../contexts';
 import { Toast } from './Toast';
 
 interface IRecommendationList {
@@ -22,6 +22,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
   const [movieSelection, setMovieSelection] = useState<number[]>([])
   const [formSubmitting, setFormSubmitting] = useState(false)
   const { userId } = useContext(UserContext)
+  const { history, location } = useRouter();
 
   const cacheKey = `recommendation:${userId}`
 
@@ -32,6 +33,16 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
       setMovieSelection([...movieSelection, id])
   }
 
+  /*
+    useEffect(() => {
+      console.log(location.pathname)
+      triggerEvent({
+        name: 'pageLoad',
+        attributes: {
+          'pageUrl': location.pathname
+        }
+      })
+    }, [location.pathname]);*/
 
   useEffect(() => {
     async function execute() {

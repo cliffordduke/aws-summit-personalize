@@ -7,6 +7,25 @@ import * as serviceWorker from './serviceWorker';
 import { App, RecommendationList, MyHistory } from './components'
 import { UserContext } from './contexts'
 import { useLocalStorage } from './LocalStorage';
+import Amplify from 'aws-amplify'
+import Analytics from '@aws-amplify/analytics'
+import settings from './settings'
+import { detect } from 'detect-browser'
+
+
+Amplify.configure(settings.amplify_config)
+
+Analytics.autoTrack('pageView', {
+  enable: true,
+  eventName: 'pageView',
+  attributes: () => detect(),
+  type: 'SPA'
+})
+
+Analytics.autoTrack('event', {
+  enable: true,
+  events: ['click']
+})
 
 const theme = {
   global: {
