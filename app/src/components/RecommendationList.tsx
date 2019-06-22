@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from 'react'
 
 import { Movie } from './Movie'
 import { Grid, ResponsiveContext, Text, Box, Button, Heading } from 'grommet';
-import { UserContext, useRouter } from '../contexts';
+import { UserContext } from '../contexts';
 import { Toast } from './Toast';
+import { Save } from 'grommet-icons'
 
 interface IRecommendationList {
   match: {
@@ -22,7 +23,6 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
   const [movieSelection, setMovieSelection] = useState<number[]>([])
   const [formSubmitting, setFormSubmitting] = useState(false)
   const { userId } = useContext(UserContext)
-  const { history, location } = useRouter();
 
   const cacheKey = `recommendation:${userId}`
 
@@ -32,17 +32,6 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
     else
       setMovieSelection([...movieSelection, id])
   }
-
-  /*
-    useEffect(() => {
-      console.log(location.pathname)
-      triggerEvent({
-        name: 'pageLoad',
-        attributes: {
-          'pageUrl': location.pathname
-        }
-      })
-    }, [location.pathname]);*/
 
   useEffect(() => {
     async function execute() {
@@ -101,18 +90,18 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
         }
       </ResponsiveContext.Consumer>
       {movieSelection.length > 0 &&
-        <Toast position="bottom" full="horizontal" modal={false}>
+        <Toast position="bottom" full="horizontal" modal={false} responsive={false}>
           <Box
             direction="row"
             align="center"
             justify="between"
             elevation="small"
-            pad={{ vertical: 'xsmall', horizontal: 'large' }}
+            pad={{ vertical: 'small', horizontal: 'large' }}
             background="#161E2D"
             gap="medium"
           >
             <Text size="medium">Favorite ({movieSelection.length}) movie{movieSelection.length > 1 ? 's' : ''}</Text>
-            <Button disabled={formSubmitting} color="brand" label={formSubmitting ? "Saving..." : "Save"} onClick={submitChoices} />
+            <Button disabled={formSubmitting} color="brand" icon={<Save />} label={formSubmitting ? "Saving..." : "Save"} onClick={submitChoices} />
           </Box>
         </Toast>
       }

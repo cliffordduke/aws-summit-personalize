@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { Box, Image, Button, TextInput } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
@@ -30,7 +30,7 @@ export const App = withRouter(({ history }) => {
 
   return (
     <Box
-      style={{ height: "100vh", width: "40vw" }}
+      style={{ height: "100vh" }}
       pad="large"
       alignSelf="center"
       justify="center"
