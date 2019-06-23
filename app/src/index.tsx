@@ -106,7 +106,7 @@ const Layout: React.FC = () => {
         <div className="App">
           <Grommet theme={theme}>
             <AppHeader />
-            <Box height="70vh">
+            <Box>
               <Switch>
                 <Route path='/' exact component={App} />
                 <PrivateRoute path='/recommendations' exact component={RecommendationList} />

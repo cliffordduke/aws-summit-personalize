@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Box, Image, Button, TextInput } from 'grommet';
+import { Box, Image, Button, TextInput, Grid } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
 import logo from '../assets/AWS_logo.png'
@@ -30,23 +30,45 @@ export const App = withRouter(({ history }) => {
 
   return (
     <Box
-      style={{ height: "100vh" }}
-      pad="large"
+      style={{ marginTop: '30vh' }}
       alignSelf="center"
       justify="center"
       align="center">
-      <Box pad="large">
-        <Image src={logo} />
-      </Box>
-      <Box pad="small">
-        <TextInput placeholder="Use Existing User ID" value={userInput} onChange={onChange} onKeyUp={onEnter} />
-      </Box>
-      <Box pad="small">
-        <Button label={userInput ? 'Use Existing User' : 'New User'} onClick={submit} />
-        {userId !== 0 &&
-          <Button margin={{ top: 'small' }} label="Logout" onClick={logout} />
-        }
-      </Box>
+      <Grid
+        rows={['small', 'small']}
+        columns={['small']}
+        gap="small"
+        areas={[
+          { name: 'logo', start: [0, 0], end: [0, 0] },
+          { name: 'form', start: [0, 1], end: [0, 1] },
+        ]}>
+        <Box gridArea='logo'>
+          <Image draggable={false} src={logo} />
+        </Box>
+        <Box gridArea='form'>
+          <TextInput placeholder="Use Existing User ID" value={userInput} onChange={onChange} onKeyUp={onEnter} />
+          <Box pad="small">
+            <Button label={userInput ? 'Use Existing User' : 'New User'} onClick={submit} />
+            {userId !== 0 &&
+              <Button margin={{ top: 'small' }} label="Logout" onClick={logout} />
+            }
+          </Box>
+        </Box>
+      </Grid>
     </Box>
   );
 })
+
+
+let test = (userInput, userId, logout, submit) => (
+  <Box
+    style={{ height: "100vh" }}
+    pad="large"
+    alignSelf="center"
+    justify="center"
+    align="center">
+
+
+
+  </Box>
+)
