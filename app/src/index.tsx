@@ -1,17 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { Grommet, Box, Heading } from 'grommet';
+import { Grommet, Box, Heading, ResponsiveContext, Image } from 'grommet';
 import { BrowserRouter as Router, Route, Link, Switch, withRouter, Redirect } from 'react-router-dom'
 import * as serviceWorker from './serviceWorker';
-import { App, RecommendationList, MyHistory } from './components'
+import { App, RecommendationList, MyHistory, Footer } from './components'
 import { UserContext } from './contexts'
 import { useLocalStorage } from './LocalStorage';
 import Amplify from 'aws-amplify'
 import Analytics from '@aws-amplify/analytics'
 import settings from './settings'
 import { detect } from 'detect-browser'
-
+import logo from './assets/AWS_logo_alt.png'
 
 Amplify.configure(settings.amplify_config)
 
@@ -36,45 +36,55 @@ const theme = {
     font: {
       family: 'AmazonEmber',
       size: '14px',
-      height: '20px',
     },
   },
 };
 
-const AppHeader = withRouter(({ location }) => {
+const Title = ({ size }) => {
+  switch (size) {
+    case "small":
+      return <Link to='/'><Image src={logo} draggable={false} height="30px" /></Link>
+    default:
+      return <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize MovieLens Demo</Link></Heading>
+  }
+}
 
-  return (
-    <UserContext.Consumer>
-      {
-        ({ userId }) => (
-          <Box
-            tag="header"
-            direction="row"
-            align="center"
-            justify="between"
-            gap="medium"
-            background={{ color: "brand", dark: true }}
-            pad={{ left: 'medium', right: 'small', vertical: 'small' }}
-            margin={{ bottom: 'medium' }}
+const AppHeader = withRouter(({ location }) => (
+  <ResponsiveContext.Consumer>
+    {size => (
+      <UserContext.Consumer>
+        {
+          ({ userId }) => (
+            <Box
+              tag="header"
+              direction="row"
+              align="center"
+              justify="between"
+              gap="medium"
+              background={{ color: "brand", dark: true }}
+              pad={{ left: 'medium', right: 'small', vertical: 'small' }}
+              margin={{ bottom: 'medium' }}
+              elevation='medium'
+            >
 
-            elevation='medium'
-          >
-            <Heading level={4} margin="xsmall"><Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>Amazon Personalize MovieLens Demo</Link></Heading>
-            {userId > 0 &&
-              <Box direction="row" gap="xxsmall" justify="end"
-              >{`Your User ID: ${userId}`} |
+              <Title size={size} />
+
+              {userId > 0 &&
+                <Box direction="row" gap="xxsmall" justify="end"
+                >{`ID: ${userId}`} |
             {location.pathname === '/recommendations/history' || location.pathname === '/'
-                  ? <Link to={`/recommendations`} style={{ textDecoration: 'none', color: 'inherit' }}>Recommendations</Link>
-                  : <Link to={`/recommendations/history`} style={{ textDecoration: 'none', color: 'inherit' }}>History</Link>}
-              </Box>
-            }
+                    ? <Link to={`/recommendations`} style={{ textDecoration: 'none', color: 'inherit' }}>Movies</Link>
+                    : <Link to={`/recommendations/history`} style={{ textDecoration: 'none', color: 'inherit' }}>History</Link>}
+                </Box>
+              }
 
-          </Box>
-        )
-      }
-    </UserContext.Consumer>
-  )
-})
+            </Box>
+          )
+        }
+      </UserContext.Consumer>
+    )}
+  </ResponsiveContext.Consumer>
+))
 
 
 const Layout: React.FC = () => {
@@ -105,16 +115,19 @@ const Layout: React.FC = () => {
       <Router>
         <div className="App">
           <Grommet theme={theme}>
-            <AppHeader />
-            <Box>
-              <Switch>
-                <Route path='/' exact component={App} />
-                <PrivateRoute path='/recommendations' exact component={RecommendationList} />
-                <PrivateRoute path='/recommendations/history' exact component={MyHistory} />
-                <Route path='/recommendations/history/:userId' exact component={MyHistory} />
-                <Route path='/recommendations/:userId' exact component={RecommendationList} />
-              </Switch>
-            </Box>
+            <div className="wrapper" style={{ display: "grid", minHeight: "100vh", gridTemplateRows: "auto 1fr auto" }}>
+              <AppHeader />
+              <Box>
+                <Switch>
+                  <Route path='/' exact component={App} />
+                  <PrivateRoute path='/recommendations' exact component={RecommendationList} />
+                  <PrivateRoute path='/recommendations/history' exact component={MyHistory} />
+                  <Route path='/recommendations/history/:userId' exact component={MyHistory} />
+                  <Route path='/recommendations/:userId' exact component={RecommendationList} />
+                </Switch>
+              </Box>
+              <Footer />
+            </div>
           </Grommet>
         </div>
       </Router>

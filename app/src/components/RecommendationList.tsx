@@ -72,16 +72,17 @@ export const RecommendationList: React.FC<IRecommendationList> = ({ match }) => 
             <Grid
               align="start"
               margin={{ left: "small", right: "small", bottom: 'xlarge' }}
-              columns={{ count: "fill", size: "300px" }}
-              gap="medium">
+              columns={{ count: "fill", size: size === "small" ? "120px" : "300px" }}
+              gap="medium" style={{ WebkitOverflowScrolling: 'touch' }}>
               {
                 recommendations.map((recommendation, index) => (
                   <Movie
                     toggleSelection={toggleSelection}
                     key={recommendation}
                     id={recommendation}
-                    showGenres={true}
-                    truncateTitle={true}
+                    imageOnly={size === "small"}
+                    showGenres={size !== "small"}
+                    truncateTitle={size !== "small"}
                     showTitle={true} />
                 ))
               }

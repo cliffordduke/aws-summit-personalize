@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { Box, Image, Button, TextInput, Grid } from 'grommet';
+import { Box, Image, Button, TextInput, Grid, Heading, ResponsiveContext } from 'grommet';
 import { UserContext } from '../contexts'
 import { withRouter } from 'react-router-dom'
 import logo from '../assets/AWS_logo.png'
@@ -28,23 +28,35 @@ export const App = withRouter(({ history }) => {
     setUserId(0)
   }
 
+  function GetHeading({ size }) {
+    switch (size) {
+      case "small":
+        return <Heading level="2" textAlign="center" gridArea="title">Amazon Personalize Movielens Demo</Heading>
+      default:
+        return <Image draggable={false} src={logo} />
+    }
+  }
+
   return (
     <Box
-      style={{ marginTop: '30vh' }}
+      margin={{ top: 'large' }}
       alignSelf="center"
-      justify="center"
       align="center">
       <Grid
-        rows={['small', 'small']}
+        rows={['small', 'small', 'small']}
         columns={['small']}
         gap="small"
         areas={[
           { name: 'logo', start: [0, 0], end: [0, 0] },
           { name: 'form', start: [0, 1], end: [0, 1] },
         ]}>
-        <Box gridArea='logo'>
-          <Image draggable={false} src={logo} />
-        </Box>
+        <ResponsiveContext.Consumer>
+          {size => (
+            <Box gridArea='logo' >
+              <GetHeading size={size} />
+            </Box>
+          )}
+        </ResponsiveContext.Consumer>
         <Box gridArea='form'>
           <TextInput placeholder="Use Existing User ID" value={userInput} onChange={onChange} onKeyUp={onEnter} />
           <Box pad="small">
@@ -58,17 +70,3 @@ export const App = withRouter(({ history }) => {
     </Box>
   );
 })
-
-
-let test = (userInput, userId, logout, submit) => (
-  <Box
-    style={{ height: "100vh" }}
-    pad="large"
-    alignSelf="center"
-    justify="center"
-    align="center">
-
-
-
-  </Box>
-)

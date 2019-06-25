@@ -72,7 +72,7 @@ export const MyHistory = withRouter(({ match, history: routeHistory }) => {
   }
   return (
     <Box>
-      <Heading level="2" margin={{ left: 'small' }}>Your Recommendation History</Heading>
+      <Heading level="3" margin={{ left: 'small' }}>Your Recommendation History</Heading>
       <Timeline>
         {
           history.map((record, index) => (
