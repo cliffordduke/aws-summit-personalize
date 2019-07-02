@@ -24,7 +24,8 @@ Analytics.autoTrack('pageView', {
 
 Analytics.autoTrack('event', {
   enable: true,
-  events: ['click']
+  events: ['click'],
+  selectorPrefix: 'data-amplify-'
 })
 
 const theme = {

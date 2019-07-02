@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Box, Image, Heading, Text, Button } from 'grommet';
 import missing_artwork from '../assets/missing-artwork.png'
+import { UserContext } from '../contexts';
 
 interface IMovieProps {
   id: number,
@@ -27,6 +28,7 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly, f
   const [movie, setMovie]: [IMovie, React.Dispatch<React.SetStateAction<IMovie>>] = useState({ movieId: 0 });
   const [highlight, setHighlight] = useState(false)
   const [loaded, setLoaded] = useState(false)
+  const { userId } = useContext(UserContext)
 
   useEffect(() => {
     async function getMovie() {
@@ -47,6 +49,9 @@ export const Movie: React.FC<IMovieProps> = ({ id, toggleSelection, imageOnly, f
   return (
     <Box round="xxsmall" elevation="small" overflow="hidden" border={highlight ? { color: 'brand', size: 'small' } : false}>
       <Button
+        data-amplify-on="click"
+        data-amplify-name="movie-select"
+        data-amplify-attrs={`movie_id:${id},user_id:${userId}`}
         onClick={() => {
           if (toggleSelection && movie.movieId) {
             setHighlight(!highlight)
