@@ -16,7 +16,9 @@ export const App = withRouter(({ history }) => {
   }
 
   function onEnter(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.keyCode === 13) submit();
+    if (event.keyCode === 13) {
+      submit();
+    }
   }
 
   function submit() {

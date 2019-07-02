@@ -22,12 +22,6 @@ Analytics.autoTrack('pageView', {
   type: 'SPA'
 })
 
-Analytics.autoTrack('event', {
-  enable: true,
-  events: ['click'],
-  selectorPrefix: 'data-amplify-'
-})
-
 const theme = {
   global: {
     colors: {

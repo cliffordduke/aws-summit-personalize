@@ -9,7 +9,7 @@
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "^4.3.3",
     "@types/styled-components": "^4.1.16",
-    "aws-amplify": "^1.1.28",
+    "aws-amplify": "^1.1.29",
     "aws-amplify-react": "^2.3.9",
     "detect-browser": "^4.5.1",
     "grommet": "^2.7.1",
