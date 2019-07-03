@@ -35,10 +35,9 @@ export const App = withRouter(({ history }) => {
     Analytics.updateEndpoint({
       address: `clifduke+pinpointdemo_${userId}@amazon.com`,
       userId: userId.toString()
-    }).then(() => {
-      setUserId(userId);
-      history.push("/recommendations");
     });
+    setUserId(userId);
+    history.push("/recommendations");
   }
 
   function logout() {
