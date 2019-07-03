@@ -5,6 +5,7 @@ import { Grid, ResponsiveContext, Text, Box, Button, Heading } from "grommet";
 import { UserContext } from "../contexts";
 import { Toast } from "./Toast";
 import { Save } from "grommet-icons";
+import Analytics from "@aws-amplify/analytics";
 
 interface IRecommendationList {
   match: {
@@ -25,7 +26,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({
   const [movieSelection, setMovieSelection] = useState<number[]>([]);
   const [formSubmitting, setFormSubmitting] = useState(false);
   const { userId } = useContext(UserContext);
-
+  let lastTrigger = new Date().getTime();
   const cacheKey = `recommendation:${userId}`;
 
   function toggleSelection(id: number) {
@@ -50,7 +51,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({
       }
     }
     execute();
-  }, [match.params.userId, userId, cacheKey]);
+  }, [match.params.userId, userId, cacheKey, lastTrigger]);
 
   async function submitChoices() {
     setFormSubmitting(true);
@@ -65,9 +66,15 @@ export const RecommendationList: React.FC<IRecommendationList> = ({
         body: JSON.stringify(payload)
       }
     );
-    localStorage.removeItem(cacheKey);
-    localStorage.removeItem(`history:${userId}`);
-    window.location.reload();
+    Analytics.record({
+      name: "movie-submit"
+    }).then(() => {
+      localStorage.removeItem(cacheKey);
+      localStorage.removeItem(`history:${userId}`);
+      setFormSubmitting(false);
+      setMovieSelection([]);
+      lastTrigger = new Date().getTime();
+    });
   }
 
   return (
@@ -78,6 +85,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({
       <ResponsiveContext.Consumer>
         {size => (
           <Grid
+            id="recommendationList"
             align="start"
             margin={{ left: "small", right: "small", bottom: "xlarge" }}
             columns={{
@@ -87,7 +95,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({
             gap="medium"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
-            {recommendations.map((recommendation, index) => (
+            {recommendations.map(recommendation => (
               <Movie
                 toggleSelection={toggleSelection}
                 key={recommendation}
@@ -127,6 +135,7 @@ export const RecommendationList: React.FC<IRecommendationList> = ({
               icon={<Save />}
               label={formSubmitting ? "Saving..." : "Save"}
               onClick={submitChoices}
+              id="formSubmit"
             />
           </Box>
         </Toast>

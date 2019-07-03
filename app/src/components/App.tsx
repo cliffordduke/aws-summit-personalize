@@ -11,6 +11,7 @@ import {
 import { UserContext } from "../contexts";
 import { withRouter } from "react-router-dom";
 import logo from "../assets/AWS_logo.png";
+import { Analytics } from "aws-amplify";
 
 export const App = withRouter(({ history }) => {
   const [userInput, setUserInput] = useState("");
@@ -30,8 +31,14 @@ export const App = withRouter(({ history }) => {
   }
 
   function submit() {
-    setUserId(userInput ? parseInt(userInput) : new Date().getTime());
-    history.push("/recommendations");
+    let userId = userInput ? parseInt(userInput) : new Date().getTime();
+    Analytics.updateEndpoint({
+      address: `clifduke+pinpointdemo_${userId}@amazon.com`,
+      userId: userId.toString()
+    }).then(() => {
+      setUserId(userId);
+      history.push("/recommendations");
+    });
   }
 
   function logout() {
@@ -71,6 +78,7 @@ export const App = withRouter(({ history }) => {
         </ResponsiveContext.Consumer>
         <Box gridArea="form">
           <TextInput
+            className="userid"
             placeholder="Use Existing User ID"
             value={userInput}
             onChange={onChange}
@@ -78,6 +86,7 @@ export const App = withRouter(({ history }) => {
           />
           <Box pad="small">
             <Button
+              className="submit"
               label={userInput ? "Use Existing User" : "New User"}
               onClick={submit}
             />

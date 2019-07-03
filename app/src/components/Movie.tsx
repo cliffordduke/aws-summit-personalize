@@ -66,6 +66,7 @@ export const Movie: React.FC<IMovieProps> = ({
       border={highlight ? { color: "brand", size: "small" } : false}
     >
       <Button
+        className="movie"
         onClick={() => {
           if (toggleSelection && movie.movieId) {
             let attributes = {
@@ -78,10 +79,9 @@ export const Movie: React.FC<IMovieProps> = ({
             Analytics.record({
               name: "movie-select",
               attributes: attributes
-            }).then(() => {
-              setHighlight(!highlight);
-              toggleSelection(movie.movieId);
             });
+            setHighlight(!highlight);
+            toggleSelection(movie.movieId);
           }
         }}
       >
