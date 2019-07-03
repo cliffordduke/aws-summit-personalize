@@ -1,5 +1,5 @@
-import React from 'react'
-import { Box, Text } from 'grommet';
+import React from "react";
+import { Box, Text } from "grommet";
 
 export const Footer: React.FC = () => (
   <Box
@@ -10,7 +10,13 @@ export const Footer: React.FC = () => (
     alignContent="center"
   >
     <Text weight="bold" size="small" color="white" alignSelf="center">
-      Copyright &copy; 2019 Amazon Web Services | <a href="mailto:aws-hk@amazon.com" style={{ textDecoration: 'none', color: 'inherit' }}>Contact Us</a>
+      Copyright &copy; 2019 Amazon Web Services |{" "}
+      <a
+        href="mailto:aws-hk@amazon.com"
+        style={{ textDecoration: "none", color: "inherit" }}
+      >
+        Contact Us
+      </a>
     </Text>
   </Box>
-)
+);

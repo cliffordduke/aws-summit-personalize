@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import React from 'react';
+import styled from "styled-components";
+import React from "react";
 
 export interface IEvent extends ILabel {
-  label: string
+  label: string;
 }
 
 interface ILabel {
-  backgroundColor?: string
+  backgroundColor?: string;
 }
 
 export const Container = styled.div`
@@ -27,7 +27,7 @@ export const TimelineBlock = styled.ul`
   list-style: none;
   &:before {
     background-color: black;
-    content: '';
+    content: "";
     margin-left: -1px;
     position: absolute;
     top: 0;
@@ -43,23 +43,20 @@ export const EventBlock = styled.li`
 
 export const IconBlock = styled.label`
   transform: rotate(45deg);
-    background-color: black;
-    outline: 10px solid white;
-    display: block;
-    margin: 0.5em 0.5em 0.5em -0.5em;
-    position: absolute;
-    top: 0;
-    left: 2em;
-    width: 1em;
-    height: 1em;
+  background-color: black;
+  outline: 10px solid white;
+  display: block;
+  margin: 0.5em 0.5em 0.5em -0.5em;
+  position: absolute;
+  top: 0;
+  left: 2em;
+  width: 1em;
+  height: 1em;
 `;
-
-
-
 
 export const Label = styled.p<ILabel>`
   color: black;
-  background-color: ${props => props.backgroundColor || 'black'};
+  background-color: ${props => props.backgroundColor || "black"};
   box-shadow: inset 0 0 0 0em #ef795a;
   display: inline-block;
   margin-bottom: 1.2em;
@@ -82,23 +79,25 @@ export const BodyBlock = styled.div`
 `;
 
 export const Details = styled.div`
-strong {
-      font-weight: 700;
-    }
-    p {
-      padding-bottom: 1.2em;
-    }
+  strong {
+    font-weight: 700;
+  }
+  p {
+    padding-bottom: 1.2em;
+  }
 `;
 
 export const Timeline: React.FC = ({ children }) => (
   <Container>
-    <TimelineBlock>
-      {children}
-    </TimelineBlock>
+    <TimelineBlock>{children}</TimelineBlock>
   </Container>
 );
 
-export const Event: React.FC<IEvent> = ({ children, label, backgroundColor }) => (
+export const Event: React.FC<IEvent> = ({
+  children,
+  label,
+  backgroundColor
+}) => (
   <EventBlock>
     <IconBlock />
     <BodyBlock>
@@ -106,4 +105,4 @@ export const Event: React.FC<IEvent> = ({ children, label, backgroundColor }) =>
       <Details>{children}</Details>
     </BodyBlock>
   </EventBlock>
-)
+);
